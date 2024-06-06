@@ -1,0 +1,44 @@
+{
+	"name": "GlobalPermissions",
+	"version": "0.1.0",
+
+	"author": [
+		"alex4401"
+	],
+	"url": "https://github.com/alex4401/mediawiki-extensions-GlobalPermissions.git",
+	"descriptionmsg": "extglobalpermissions-desc",
+	"license-name": "Proprietary",
+	"type": "wikifarm",
+	"requires": {
+		"MediaWiki": ">= 1.39.0",
+		"platform": {
+			"php": ">= 8.1"
+		}
+	},
+	"MessagesDirs": {
+		"GlobalPermissions": [
+			"i18n"
+		]
+	},
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\GlobalPermissions\\": "src/"
+	},
+	"ServiceWiringFiles": [
+		"src/ServiceWiring.php"
+	],
+	"HookHandlers": {
+		"PermissionsHooks": {
+			"class": "MediaWiki\\Extension\\GlobalPermissions\\Hooks\\PermissionsHooks"
+		}
+	},
+	"Hooks": {
+		"UserEffectiveGroups": "PermissionsHooks"
+	},
+	"config_prefix": "wgGlobalPermissions",
+	"config": {
+		"Databases": {
+			"value": []
+		}
+	},
+	"manifest_version": 2
+}
