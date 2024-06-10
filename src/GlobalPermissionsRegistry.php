@@ -49,36 +49,36 @@ class GlobalPermissionsRegistry {
         return $this->dbLoadBalancerFactory->getMainLB( $name )->getConnection( $index, [], $name );
     }
 
-    private function makeCacheKey( int $userId ): string {
-        return $this->wanObjectCache->makeGlobalKey( 'globalpermissions', $userId );
+    private function makeCacheKey( string $shareName, int $userId ): string {
+        return $this->wanObjectCache->makeGlobalKey( 'globalpermissions', 1, $shareName, $userId );
     }
 
     public function getGroupsForUserId( int $userId ): array {
-        return $this->wanObjectCache->getWithSetCallback(
-            $this->makeCacheKey( $userId ),
-            self::SHARED_CACHE_TTL,
-            function ( $old, &$ttl, &$setOpts ) use ( $userId ) {
-                $results = [];
-                foreach ( $this->options->get( 'GlobalPermissionsDatabases' ) as $share ) {
-                    $db = $this->getDatabaseConnectionRef( $share['db'], DB_PRIMARY );
-                    $results += $db->newSelectQueryBuilder()
+        $results = [];
+        foreach ( $this->options->get( 'GlobalPermissionsDatabases' ) as $share ) {
+            $results += $this->wanObjectCache->getWithSetCallback(
+                $this->makeCacheKey( $share['db'], $userId ),
+                self::SHARED_CACHE_TTL,
+                function ( $old, &$ttl, &$setOpts ) use ( &$share, $userId ) {
+                    $dbw = $this->getDatabaseConnectionRef( $share['db'], DB_PRIMARY );
+                    return $dbw->newSelectQueryBuilder()
                         ->select( 'ug_group' )
                         ->from( 'user_groups' )
                         ->where( [
                             'ug_user' => $userId,
                             'ug_group' => $share['allow'],
-                            'ug_expiry IS NULL OR ug_expiry >= ' . $db->addQuotes( $db->timestamp() ),
+                            'ug_expiry IS NULL OR ug_expiry >= ' . $dbw->addQuotes( $dbw->timestamp() ),
                         ] )
                         ->fetchFieldValues();
-                }
-                sort( $results );
-                return array_unique( $results );
-            },
-            [
-                // Avoid database stampede
-                'lockTSE' => 300,
-            ]
-        );
+                },
+                [
+                    // Avoid database stampede
+                    'lockTSE' => 300,
+                ]
+            );
+        }
+        sort( $results );
+        return array_unique( $results );
     }
 
     public function getGroupsForUser( User $user ): array {
