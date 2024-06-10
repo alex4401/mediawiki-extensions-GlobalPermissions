@@ -5,6 +5,7 @@ use WANObjectCache;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Languages\LanguageFallback;
 use MediaWiki\Languages\LanguageNameUtils;
+use MediaWiki\MainConfigNames;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionLookup;
 use ObjectCache;
@@ -22,6 +23,7 @@ class GlobalPermissionsRegistry {
      * @internal Use only in ServiceWiring
      */
     public const CONSTRUCTOR_OPTIONS = [
+        MainConfigNames::DBname,
         'GlobalPermissionsDatabases',
     ];
 
@@ -83,5 +85,14 @@ class GlobalPermissionsRegistry {
 
     public function getGroupsForUser( User $user ): array {
         return $this->getGroupsForUserId( $user->getId() );
+    }
+
+    public function purgeLocalCacheForUserId( int $userId ): void {
+        $this->wanObjectCache->delete( $this->makeCacheKey( $this->options->get( MainConfigNames::DBname ),
+            $userId ) );
+    }
+
+    public function purgeLocalCacheForUser( User $user ): void {
+        $this->purgeLocalCacheForUserId( $user->getId() );
     }
 }

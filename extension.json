@@ -27,13 +27,17 @@
 		"src/ServiceWiring.php"
 	],
 	"HookHandlers": {
-		"PermissionsHooks": {
+		"Permissions": {
 			"class": "MediaWiki\\Extension\\GlobalPermissions\\Hooks\\PermissionsHooks"
+		},
+		"CacheInvalidation": {
+			"class": "MediaWiki\\Extension\\GlobalPermissions\\Hooks\\CacheInvalidationHooks"
 		}
 	},
 	"Hooks": {
-		"UserEffectiveGroups": "PermissionsHooks",
-		"UserIsBot": "PermissionsHooks"
+		"UserEffectiveGroups": "Permissions",
+		"UserIsBot": "Permissions",
+		"UserGroupsChanged": "CacheInvalidation"
 	},
 	"config_prefix": "wgGlobalPermissions",
 	"config": {
