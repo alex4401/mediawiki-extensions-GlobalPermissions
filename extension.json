@@ -32,7 +32,8 @@
 		}
 	},
 	"Hooks": {
-		"UserEffectiveGroups": "PermissionsHooks"
+		"UserEffectiveGroups": "PermissionsHooks",
+		"UserIsBot": "PermissionsHooks"
 	},
 	"config_prefix": "wgGlobalPermissions",
 	"config": {
