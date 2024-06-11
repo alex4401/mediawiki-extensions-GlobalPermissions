@@ -23,8 +23,7 @@ final class PermissionsHooks implements
 	 */
 	public function onUserEffectiveGroups( $user, &$groups ) {
 		if ( $user->isRegistered() ) {
-			$groups += $this->registry->getGroupsForUser( $user );
-			$groups = array_unique( $groups );
+			$groups = array_unique( array_merge( $groups, $this->registry->getGroupsForUser( $user ) ) );
 		}
 	}
 
