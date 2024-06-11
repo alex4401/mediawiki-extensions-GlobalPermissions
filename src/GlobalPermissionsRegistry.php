@@ -17,6 +17,7 @@ class GlobalPermissionsRegistry {
     public const CONSTRUCTOR_OPTIONS = [
         MainConfigNames::DBname,
         'GlobalPermissionsDatabases',
+        'GlobalPermissionsPinnedUsers',
     ];
 
     private const SHARED_CACHE_TTL = 60 * 2;
@@ -49,6 +50,15 @@ class GlobalPermissionsRegistry {
 
     public function getGroupsForUserId( int $userId ): array {
         $results = [];
+
+        // Get pinned permissions
+        foreach ( $this->options->get( 'GlobalPermissionsPinnedUsers' ) as $group => $userIds ) {
+            if ( in_array( $userId, $userIds ) ) {
+                $results[] = $group;
+            }
+        }
+        
+        // Load permissions from databases
         foreach ( $this->options->get( 'GlobalPermissionsDatabases' ) as $shareDb => $shareGroups ) {
             $results = array_merge( $results, $this->wanObjectCache->getWithSetCallback(
                 $this->makeCacheKey( $shareDb, $userId ),
@@ -71,6 +81,7 @@ class GlobalPermissionsRegistry {
                 ]
             ) );
         }
+
         sort( $results );
         return array_unique( $results );
     }

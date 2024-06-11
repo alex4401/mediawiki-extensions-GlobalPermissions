@@ -49,6 +49,9 @@
 	"config": {
 		"Databases": {
 			"value": []
+		},
+		"PinnedUsers": {
+			"value": []
 		}
 	},
 	"manifest_version": 2
