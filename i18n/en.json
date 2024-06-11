@@ -4,5 +4,5 @@
             "alex4401"
         ]
     },
-    "extglobalrights-desc": "Enables global user rights management through a central wiki."
+    "extglobalpermissions-desc": "Enables global rights management through record sharing with selected wikis."
 }
