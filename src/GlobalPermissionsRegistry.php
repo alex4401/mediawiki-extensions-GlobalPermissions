@@ -49,18 +49,18 @@ class GlobalPermissionsRegistry {
 
     public function getGroupsForUserId( int $userId ): array {
         $results = [];
-        foreach ( $this->options->get( 'GlobalPermissionsDatabases' ) as $share ) {
-            $results += $this->wanObjectCache->getWithSetCallback(
-                $this->makeCacheKey( $share['db'], $userId ),
+        foreach ( $this->options->get( 'GlobalPermissionsDatabases' ) as $shareDb => $shareGroups ) {
+            $results = array_merge( $results, $this->wanObjectCache->getWithSetCallback(
+                $this->makeCacheKey( $shareDb, $userId ),
                 self::SHARED_CACHE_TTL,
-                function ( $old, &$ttl, &$setOpts ) use ( &$share, $userId ) {
-                    $dbw = $this->getDatabaseConnectionRef( $share['db'], DB_PRIMARY );
+                function ( $old, &$ttl, &$setOpts ) use ( $shareDb, &$shareGroups, $userId ) {
+                    $dbw = $this->getDatabaseConnectionRef( $shareDb, DB_PRIMARY );
                     return $dbw->newSelectQueryBuilder()
                         ->select( 'ug_group' )
                         ->from( 'user_groups' )
                         ->where( [
                             'ug_user' => $userId,
-                            'ug_group' => $share['allow'],
+                            'ug_group' => $shareGroups,
                             'ug_expiry IS NULL OR ug_expiry >= ' . $dbw->addQuotes( $dbw->timestamp() ),
                         ] )
                         ->fetchFieldValues();
@@ -69,7 +69,7 @@ class GlobalPermissionsRegistry {
                     // Avoid database stampede
                     'lockTSE' => 300,
                 ]
-            );
+            ) );
         }
         sort( $results );
         return array_unique( $results );
