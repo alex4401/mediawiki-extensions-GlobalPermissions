@@ -1,7 +1,7 @@
 <?php
 
 use MediaWiki\Config\ServiceOptions;
-use MediaWiki\Extension\GlobalMessages\GlobalPermissionsRegistry;
+use MediaWiki\Extension\GlobalPermissions\GlobalPermissionsRegistry;
 use MediaWiki\MediaWikiServices;
 
 return [

@@ -1,7 +1,7 @@
 <?php
-namespace MediaWiki\Extension\GlobalPermissions;
+namespace MediaWiki\Extension\GlobalPermissions\Hooks;
 
-use MediaWiki\Extension\GlobalMessages\GlobalPermissionsRegistry;
+use MediaWiki\Extension\GlobalPermissions\GlobalPermissionsRegistry;
 use User;
 
 final class CacheInvalidationHooks implements

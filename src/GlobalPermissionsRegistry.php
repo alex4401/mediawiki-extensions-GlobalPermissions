@@ -1,20 +1,12 @@
 <?php
-namespace MediaWiki\Extension\GlobalMessages;
+namespace MediaWiki\Extension\GlobalPermissions;
 
 use WANObjectCache;
 use MediaWiki\Config\ServiceOptions;
-use MediaWiki\Languages\LanguageFallback;
-use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\MainConfigNames;
-use MediaWiki\MediaWikiServices;
-use MediaWiki\Revision\RevisionLookup;
-use ObjectCache;
 use User;
-use Wikimedia\Rdbms\Database;
 use Wikimedia\Rdbms\IDatabase;
-use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\LBFactory;
-use Wikimedia\Rdbms\LoadBalancer;
 
 class GlobalPermissionsRegistry {
     public const SERVICE_NAME = 'GlobalPermissions.Registry';
