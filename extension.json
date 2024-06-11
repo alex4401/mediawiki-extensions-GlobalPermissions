@@ -28,10 +28,16 @@
 	],
 	"HookHandlers": {
 		"Permissions": {
-			"class": "MediaWiki\\Extension\\GlobalPermissions\\Hooks\\PermissionsHooks"
+			"class": "MediaWiki\\Extension\\GlobalPermissions\\Hooks\\PermissionsHooks",
+			"services": [
+				"GlobalPermissions.Registry"
+			]
 		},
 		"CacheInvalidation": {
-			"class": "MediaWiki\\Extension\\GlobalPermissions\\Hooks\\CacheInvalidationHooks"
+			"class": "MediaWiki\\Extension\\GlobalPermissions\\Hooks\\CacheInvalidationHooks",
+			"services": [
+				"GlobalPermissions.Registry"
+			]
 		}
 	},
 	"Hooks": {
